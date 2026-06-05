@@ -39,10 +39,24 @@ body.sell .lang{color:rgba(252,250,244,.7);border-color:rgba(252,250,244,.2)}
 .glow{position:absolute;left:50%;top:33%;transform:translate(-50%,-50%);width:min(560px,84vw);height:min(560px,84vw);border-radius:50%;background:radial-gradient(circle,rgba(214,84,31,.16),rgba(204,150,51,.06) 45%,transparent 66%);filter:blur(10px);animation:breathe 7s ease-in-out infinite;z-index:1}
 @keyframes breathe{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
 .dhero .wrap{position:relative;z-index:2}
-.mark{position:relative;display:inline-block;padding-top:.7em;opacity:0;animation:rise .9s cubic-bezier(.2,.7,.2,1) .15s forwards}
+.mark{position:relative;display:inline-block;padding-top:1.15em;opacity:0;animation:rise .9s cubic-bezier(.2,.7,.2,1) .15s forwards}
 @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .mark .word{font-family:var(--serif);font-weight:600;font-size:clamp(3.4rem,11vw,7rem);line-height:.9;letter-spacing:-.03em}
-.mark .word .dot{color:var(--vermillion)}
+.mark .word .dot{color:var(--vermillion);text-shadow:0 0 16px rgba(214,84,31,.5);animation:dotIgnite 1.4s cubic-bezier(.2,.7,.2,1) .85s both}
+@keyframes dotIgnite{0%{text-shadow:0 0 0 rgba(214,84,31,0)}30%{text-shadow:0 0 26px rgba(232,116,62,.85)}100%{text-shadow:0 0 16px rgba(214,84,31,.5)}}
+/* the wordmark's own halo: a luminous ring that draws itself in, then breathes */
+.halo-arc{position:absolute;left:50%;top:.04em;width:min(70%,330px);aspect-ratio:200/64;transform:translateX(-50%) rotate(-3deg);pointer-events:none;overflow:visible;filter:drop-shadow(0 3px 11px rgba(214,84,31,.26));opacity:0;animation:haloFade .9s ease .85s forwards}
+@keyframes haloFade{to{opacity:1}}
+.halo-arc .hbreathe{transform-box:fill-box;transform-origin:center;animation:haloBreathe 7s ease-in-out 2.3s infinite}
+@keyframes haloBreathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.halo-arc ellipse{stroke-dasharray:100;stroke-dashoffset:100;animation:haloDraw 1.35s cubic-bezier(.2,.7,.2,1) .95s forwards}
+@keyframes haloDraw{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){
+  .halo-arc{opacity:1;animation:none}
+  .halo-arc .hbreathe{animation:none}
+  .halo-arc ellipse{stroke-dashoffset:0;animation:none}
+  .mark .word .dot{animation:none;text-shadow:0 0 16px rgba(214,84,31,.5)}
+}
 .mark .ae{position:absolute;left:8%;top:-.16em;font-family:var(--script);font-weight:700;font-size:clamp(1.7rem,4.2vw,2.7rem);color:var(--vermillion);transform:rotate(-13deg);clip-path:inset(0 100% 0 0);animation:write .85s ease 1s forwards;pointer-events:none}
 @keyframes write{to{clip-path:inset(0 -15% 0 0)}}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-45);margin-top:16px;opacity:0;animation:rise .8s ease .5s forwards}
@@ -521,7 +535,7 @@ body.biz footer p{color:rgba(244,239,232,.4)}
   <header class="dhero">
     <div class="bg"></div><div class="scrim"></div><div class="glow"></div>
     <div class="wrap">
-      <span class="mark"><span class="ae">ae</span><span class="word">halo<span class="dot">.</span></span></span>
+      <span class="mark"><svg class="halo-arc" viewBox="0 0 200 64" aria-hidden="true"><defs><linearGradient id="haloGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#CC9633" stop-opacity="0"/><stop offset=".22" stop-color="#CC9633"/><stop offset=".5" stop-color="#D6541F"/><stop offset=".78" stop-color="#E8743E"/><stop offset="1" stop-color="#CC9633" stop-opacity="0"/></linearGradient></defs><g class="hbreathe"><ellipse cx="100" cy="32" rx="93" ry="21" pathLength="100" fill="none" stroke="url(#haloGrad)" stroke-width="2.4" stroke-linecap="round"/></g></svg><span class="ae">ae</span><span class="word">halo<span class="dot">.</span></span></span>
       <div class="eyebrow" id="eyebrow">આપણું વડોદરા · Vadodara's own</div>
       <h1 class="hook" id="hook">Vadodara has everything. <em>We just made it easier to find.</em></h1>
       <p class="subhook" id="subhook">From home-cooked food and mehndi artists to tutors, tailors, bakers and pandits — just tell Halo what you need. Its AI finds the right local people near you, with reviews, distance, and one tap to contact.</p>
