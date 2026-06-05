@@ -1,0 +1,43 @@
+name: Deploy preview to GitHub Pages
+
+# Publishes the static HTML in this repo (Halo.html, halo-curiosity.html, ...)
+# so the work-in-progress can be viewed at a real URL. Runs on every push to
+# the working branch, so the preview auto-updates as we iterate.
+
+on:
+  push:
+    branches:
+      - claude/eager-fermi-s6ZHd
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let one deployment finish before the next starts.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
