@@ -112,14 +112,17 @@ html.js .rv.d1{transition-delay:.1s}html.js .rv.d2{transition-delay:.2s}html.js 
 .nav .brand .mk{font-size:23px}
 .nav .links{justify-self:center;display:flex;gap:clamp(14px,2.6vw,34px)}
 .nav .links a{font-weight:500;font-size:14.5px;color:var(--lt-soft);text-decoration:none;transition:color .25s}
-.nav .joinlink{justify-self:end;font-weight:600;font-size:14.5px;color:#fff;background:var(--btn);border-radius:999px;padding:9px 20px;text-decoration:none;transition:transform .3s var(--out)}
+.nright{justify-self:end;display:flex;align-items:center;gap:16px}
+.navclock{font-family:var(--gu);font-weight:600;font-size:13.5px;color:var(--lt-soft);letter-spacing:.04em;transition:color .8s}
+.nav .joinlink{font-weight:600;font-size:14.5px;color:#fff;background:var(--btn);border-radius:999px;padding:9px 20px;text-decoration:none;transition:transform .3s var(--out)}
 .nav .joinlink:active{transform:scale(.96)}
 @media(hover:hover){.nav .links a:hover{color:var(--lt)}.nav .joinlink:hover{transform:translateY(-1px)}}
 body[data-sky="day"] .nav{background:rgba(251,249,246,.86);border-bottom-color:var(--line)}
 body[data-sky="day"] .nav .brand{color:var(--ink)}
 body[data-sky="day"] .nav .links a{color:var(--ink-soft)}
+body[data-sky="day"] .navclock{color:var(--terra-deep)}
 @media(hover:hover){body[data-sky="day"] .nav .links a:hover{color:var(--terra-deep)}}
-@media(max-width:880px){.nav{grid-template-columns:auto 1fr}.nav .links{display:none}.nav .joinlink{justify-self:end}}
+@media(max-width:880px){.nav{grid-template-columns:auto 1fr}.nav .links{display:none}.navclock{display:none}}
 
 /* ---------------------------------------------------------------- scenes */
 .scene{position:relative;padding:clamp(90px,14vh,170px) var(--edge);scroll-margin-top:var(--nav-h)}
@@ -349,7 +352,13 @@ html:not(.js) .g-stage,html.static .g-stage{position:relative;height:auto;min-he
 .joindone .gw{font-family:var(--gu);font-weight:600;color:var(--gold);font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:14px}
 
 /* ---------------------------------------------------------------- footer */
-footer{padding:clamp(60px,9vh,100px) var(--edge) calc(44px + env(safe-area-inset-bottom));text-align:center;color:var(--lt)}
+footer{position:relative;overflow:hidden;padding:clamp(60px,9vh,100px) var(--edge) calc(190px + env(safe-area-inset-bottom));text-align:center;color:var(--lt)}
+.f-sky{position:absolute;left:0;right:0;bottom:0;height:150px;width:100%;color:#0B0502;pointer-events:none}
+.f-sky .windows rect{animation:wink 5s ease-in-out infinite}
+.f-sky .windows rect:nth-child(3n){animation-delay:-1.6s}
+.f-sky .windows rect:nth-child(3n+1){animation-delay:-3.2s}
+.f-sky .windows rect:nth-child(4n){animation-duration:7s}
+@keyframes wink{0%,100%{opacity:.85}50%{opacity:.35}}
 footer .mk{font-size:38px;color:var(--lt)}
 footer .anchors{margin-top:20px;font-family:var(--gu);font-weight:500;color:var(--gold);font-size:16px}
 footer .sig{display:block;margin-top:12px;font-size:13px;color:var(--lt-soft)}
@@ -392,13 +401,16 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
     <a href="#give">Share a local</a>
     <a href="#vision">Our vision</a>
   </div>
-  <a class="joinlink" href="#join">Join</a>
+  <div class="nright">
+    <span class="navclock" id="navClock" aria-hidden="true" lang="gu">૦૫:૫૮</span>
+    <a class="joinlink" href="#join">Join</a>
+  </div>
 </nav>
 
 <main>
 
 <!-- ============ 05:58 · FIRST LIGHT (hero) ============ -->
-<section class="scene h-tall on-dark" id="dawn" data-sky="dawn" aria-label="First light over Vadodara">
+<section class="scene h-tall on-dark" id="dawn" data-sky="dawn" data-time="૦૫:૫૮" aria-label="First light over Vadodara">
   <div class="h-stage">
     <div class="h-glow" id="hGlow"></div>
     <div class="h-sun" id="hSun" aria-hidden="true"><span class="halo-ring"></span><span class="core"></span></div>
@@ -419,7 +431,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
     </div>
 
     <svg class="h-sky" viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <g fill="currentColor">
+      <g id="citysky" fill="currentColor">
         <!-- ground -->
         <rect x="0" y="190" width="1440" height="30"/>
         <!-- old-city rooftops, left -->
@@ -457,7 +469,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 07:43 · CHAI ROUND ONE (otla / the group chat) ============ -->
-<section class="scene o-tall on-day" id="otla" data-sky="day" aria-label="How the city already asks">
+<section class="scene o-tall on-day" id="otla" data-sky="day" data-time="૦૭:૪૩" aria-label="How the city already asks">
   <div class="o-stage">
     <div class="o-grid">
       <div class="chatcard rv" aria-label="A Vadodara society group chat">
@@ -489,7 +501,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 11:20 · MID-MORNING ERRANDS (ask) ============ -->
-<section class="scene ask on-day" id="ask" data-sky="day" aria-label="Ask Halo">
+<section class="scene ask on-day" id="ask" data-sky="day" data-time="૧૧:૨૦" aria-label="Ask Halo">
   <div class="wrap">
     <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૧:૨૦</span> mid-morning errands</p>
     <h2 class="rv d1" style="margin:0 auto">Ask Halo the way you ask the group.</h2>
@@ -507,7 +519,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 14:00 · THE SLOW AFTERNOON (dhaago / trust) ============ -->
-<section class="scene dh on-day" id="dhaago" data-sky="day" aria-label="How trust works on Halo">
+<section class="scene dh on-day" id="dhaago" data-sky="day" data-time="૧૪:૦૦" aria-label="How trust works on Halo">
   <div class="wrap">
     <div class="head">
       <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૪:૦૦</span> the slow afternoon</p>
@@ -527,7 +539,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 17:15 · STREETS FILL UP AGAIN (gali / neighbourhoods) ============ -->
-<section class="scene g-tall on-day" id="gali" data-sky="day" aria-label="Vadodara neighbourhoods">
+<section class="scene g-tall on-day" id="gali" data-sky="day" data-time="૧૭:૧૫" aria-label="Vadodara neighbourhoods">
   <div class="g-stage">
     <div class="g-head">
       <p class="clock rv"><span class="t" lang="gu">૧૭:૧૫</span> streets fill up again</p>
@@ -549,7 +561,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 18:40 · NEIGHBOURS ON THE OTLA (share a local) ============ -->
-<section class="scene give on-day" id="give" data-sky="day" aria-label="Share a trusted local">
+<section class="scene give on-day" id="give" data-sky="day" data-time="૧૮:૪૦" aria-label="Share a trusted local">
   <div class="wrap">
     <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૮:૪૦</span> neighbours on the otla</p>
     <h2 class="rv d1" style="margin:0 auto">Leave a parchi for the city.</h2>
@@ -582,7 +594,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 19:10 · DIVA-BATTI TIME (vision, dusk) ============ -->
-<section class="scene vision" id="vision" data-sky="dusk" aria-label="Our vision">
+<section class="scene vision" id="vision" data-sky="dusk" data-time="૧૯:૧૦" aria-label="Our vision">
   <div class="wrap">
     <p class="clock rv"><span class="t" lang="gu">૧૯:૧૦</span> diva-batti time</p>
     <h2 class="rv d1">Vadodara is already ready.</h2>
@@ -597,7 +609,7 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 </section>
 
 <!-- ============ 22:30 · THE CITY BEFORE SLEEP (join, night) ============ -->
-<section class="scene joins on-dark" id="join" data-sky="night" aria-label="Join Halo">
+<section class="scene joins on-dark" id="join" data-sky="night" data-time="૨૨:૩૦" aria-label="Join Halo">
   <div class="wrap">
     <div id="joinPre">
       <div class="divo rv" aria-hidden="true"><span class="flame"></span><span class="bowl"></span></div>
@@ -623,11 +635,29 @@ footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
 
 </main>
 
-<footer data-sky="night">
+<footer data-sky="night" data-time="૨૩:૫૯">
   <span class="mk"><span class="ae" lang="gu">એ</span>hal<span class="o">o<span class="ring"></span></span></span>
   <p class="anchors" lang="gu">આપણી માટીનું · વિશ્વાસ · શોધ · પોતાપણું</p>
   <span class="sig">built in Vadodara, for Vadodara</span>
   <span class="fine">Names shown above are illustrative during the early community beta.</span>
+  <!-- the same skyline, asleep: a few windows still awake -->
+  <svg class="f-sky" viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <use href="#citysky"/>
+    <g class="windows" fill="#D9A441">
+      <rect x="36" y="166" width="6" height="8" rx="1"/>
+      <rect x="140" y="146" width="6" height="8" rx="1"/>
+      <rect x="338" y="158" width="6" height="8" rx="1"/>
+      <rect x="506" y="156" width="6" height="8" rx="1"/>
+      <rect x="604" y="118" width="6" height="8" rx="1"/>
+      <rect x="664" y="156" width="6" height="8" rx="1"/>
+      <rect x="728" y="124" width="6" height="8" rx="1"/>
+      <rect x="872" y="152" width="6" height="8" rx="1"/>
+      <rect x="980" y="162" width="6" height="8" rx="1"/>
+      <rect x="1080" y="156" width="6" height="8" rx="1"/>
+      <rect x="1228" y="158" width="6" height="8" rx="1"/>
+      <rect x="1404" y="164" width="6" height="8" rx="1"/>
+    </g>
+  </svg>
 </footer>
 
 <script>
@@ -658,9 +688,15 @@ document.getElementById("brand").addEventListener("click",function(){ window.scr
 
 /* --------------------------------------------------------- scene skies */
 var skySections=[].slice.call(document.querySelectorAll("[data-sky]")).filter(function(el){return el.tagName==="SECTION"||el.tagName==="FOOTER";});
+var navClock=document.getElementById("navClock");
 if("IntersectionObserver" in window){
   var sio=new IntersectionObserver(function(es){
-    es.forEach(function(en){ if(en.isIntersecting && !document.body.classList.contains("lock")) document.body.dataset.sky=en.target.dataset.sky; });
+    es.forEach(function(en){
+      if(en.isIntersecting && !document.body.classList.contains("lock")){
+        document.body.dataset.sky=en.target.dataset.sky;
+        if(navClock && en.target.dataset.time) navClock.textContent=en.target.dataset.time;
+      }
+    });
   },{rootMargin:"-42% 0px -42%",threshold:0});
   skySections.forEach(function(s){ sio.observe(s); });
 }
