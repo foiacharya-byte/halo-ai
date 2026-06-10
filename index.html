@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ae halo — Vadodara's own local companion</title>
+<meta name="description" content="Halo is Vadodara's own hyperlocal companion. Ask what the city already knows; share the people and places worth knowing.">
+<meta name="theme-color" content="#150C07">
+<!--
+  index.html — "One day in Vadodara."
+  The page is a single scroll through a city day: pre-dawn intro, sunrise hero
+  (the halo ring is the rising sun over the skyline), white daylight for the
+  living sections, terracotta dusk for the vision, lamp-lit night for join.
+  Brand systems: city clock stamps (Gujarati numerals), parchi (chit) cards,
+  dhaago (stitched trust thread), gali shop-board plates, the otla chat.
+  Gujlish chat copy is intentional. Gujarati strings [GU REVIEW].
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Hind+Vadodara:wght@400;500;600;700&family=Noto+Serif+Gujarati:wght@500;600;700&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+/* ---------------------------------------------------------------- tokens */
+:root{
+  --dawn:#20120C; --day:#FBF9F6; --dusk:#A23D12; --night:#150C07;
+  --ink:#1F150D; --ink-soft:#5C4D3E;
+  --terra:#C24E1E; --terra-deep:#8F3414; --btn:#A8400F;
+  --maroon:#5E2114; --leaf:#45522F; --haldi-deep:#9A6A14; --gold:#D9A441;
+  --lt:#F4E9DC; --lt-soft:#C9B49E;
+  --line:#E7E0D6; --line-dk:rgba(244,233,220,.18);
+  --disp:"Young Serif",Georgia,serif;
+  --body:"Hind Vadodara",system-ui,sans-serif;
+  --gu:"Noto Serif Gujarati",Georgia,serif;
+  --hand:"Caveat",cursive;
+  --out:cubic-bezier(.16,1,.3,1);
+  --nav-h:68px; --edge:clamp(20px,5vw,64px);
+  --z-nav:60; --z-intro:100;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+html:focus-within{scroll-behavior:smooth}
+body{
+  font-family:var(--body);font-size:17px;line-height:1.6;color:var(--ink);
+  background:var(--night);overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  transition:background-color 1s var(--out);
+}
+body.lock{overflow:hidden;height:100dvh}
+body[data-sky="dawn"]{background:var(--dawn)}
+body[data-sky="day"]{background:var(--day)}
+body[data-sky="dusk"]{background:var(--dusk)}
+body[data-sky="night"]{background:var(--night)}
+/* film grain, very quiet */
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.04;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+::selection{background:var(--gold);color:var(--night)}
+:focus-visible{outline:2.5px solid var(--terra);outline-offset:3px;border-radius:4px}
+
+/* ------------------------------------------------------------- wordmark */
+.mk{font-family:var(--disp);letter-spacing:-.02em;line-height:1;display:inline-flex;align-items:baseline;white-space:nowrap}
+.mk .ae{font-family:var(--gu);font-weight:600;font-size:.62em;color:var(--gold);transform:translateY(-.08em);margin-right:.18em}
+.mk .o{position:relative;display:inline-block}
+.mk .ring{position:absolute;left:50%;top:-.30em;width:.92em;height:.30em;border:.055em solid var(--gold);border-radius:50%;transform:translateX(-50%) rotate(-11deg);pointer-events:none}
+
+/* ----------------------------------------------------------- city clock */
+.clock{display:inline-flex;align-items:baseline;gap:.6em;font-weight:600;font-size:14.5px;letter-spacing:.04em}
+.clock .t{font-family:var(--gu);font-weight:700;font-size:16px}
+.clock::after{content:"";align-self:center;width:42px;height:1.5px;background:currentColor;opacity:.35}
+.on-day .clock{color:var(--terra-deep)}
+.on-dark .clock{color:var(--gold)}
+
+/* ------------------------------------------------------------- headings */
+h1,h2,h3{font-family:var(--disp);font-weight:400;letter-spacing:-.012em;text-wrap:balance}
+h1{font-size:clamp(2.5rem,6.4vw,5.2rem);line-height:1.02}
+h2{font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.08}
+.lede{font-size:clamp(1.02rem,1.6vw,1.17rem);line-height:1.65;max-width:52ch;text-wrap:pretty}
+.gu-line{font-family:var(--gu);font-weight:600}
+.btn{display:inline-block;font-family:var(--body);font-weight:600;font-size:16px;color:#fff;background:var(--btn);
+  border:0;border-radius:999px;padding:14px 30px;cursor:pointer;text-decoration:none;
+  transition:transform .35s var(--out),box-shadow .35s var(--out);box-shadow:0 14px 30px -18px rgba(95,30,5,.8)}
+.btn:active{transform:scale(.97)}
+@media(hover:hover){.btn:hover{transform:translateY(-2px);box-shadow:0 20px 36px -18px rgba(95,30,5,.85)}}
+
+/* reveals: pure enhancement; content visible without JS or with reduced motion */
+html.js .rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--out),transform .9s var(--out)}
+html.js .rv.in{opacity:1;transform:none}
+html.js .rv.d1{transition-delay:.1s}html.js .rv.d2{transition-delay:.2s}html.js .rv.d3{transition-delay:.3s}
+
+/* ----------------------------------------------------------------- intro */
+#intro{position:fixed;inset:0;z-index:var(--z-intro);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;text-align:center;padding:24px;background:radial-gradient(120% 90% at 50% 110%, #2A150B, var(--night) 62%);
+  transition:opacity 1s var(--out),visibility 1s}
+#intro.gone{opacity:0;visibility:hidden;pointer-events:none}
+#intro .i-gu{font-family:var(--gu);font-weight:600;font-size:clamp(2rem,7vw,3.6rem);color:var(--gold);opacity:0;animation:iUp 1s var(--out) .35s forwards}
+#intro .i-en{margin-top:18px;font-family:var(--disp);font-size:clamp(1.2rem,3vw,1.7rem);color:var(--lt);opacity:0;animation:iUp .9s var(--out) 1.5s forwards}
+#intro .mk{margin-top:34px;font-size:clamp(3.4rem,11vw,6rem);color:var(--lt);opacity:0;animation:iMk 1.2s var(--out) 2.5s forwards}
+#intro .mk .ring{opacity:0;animation:iRing .8s var(--out) 3.4s forwards;transform-origin:50% 50%}
+#intro .i-sub{margin-top:24px;font-size:15px;color:var(--lt-soft);opacity:0;animation:iUp .9s var(--out) 3.9s forwards}
+@keyframes iUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes iMk{from{opacity:0;transform:translateY(10px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+@keyframes iRing{from{opacity:0;transform:translateX(-50%) rotate(-11deg) scale(.4)}to{opacity:1;transform:translateX(-50%) rotate(-11deg) scale(1)}}
+.i-enter{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:calc(var(--z-intro) + 1);
+  font-family:var(--body);font-weight:600;font-size:15px;color:var(--night);background:var(--gold);border:0;border-radius:999px;
+  padding:12px 32px;cursor:pointer;opacity:0;animation:iUp .8s var(--out) 4.4s forwards}
+.i-enter[hidden]{display:none}
+
+/* ------------------------------------------------------------------ nav */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav-h);z-index:var(--z-nav);
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 var(--edge);
+  background:rgba(18,10,6,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid transparent;opacity:0;pointer-events:none;transition:background-color .8s,border-color .4s}
+.nav.show{opacity:1;pointer-events:auto;transition:opacity .9s var(--out),background-color .8s,border-color .4s}
+.nav .brand{justify-self:start;background:none;border:0;cursor:pointer;line-height:0;color:var(--lt)}
+.nav .brand .mk{font-size:23px}
+.nav .links{justify-self:center;display:flex;gap:clamp(14px,2.6vw,34px)}
+.nav .links a{font-weight:500;font-size:14.5px;color:var(--lt-soft);text-decoration:none;transition:color .25s}
+.nav .joinlink{justify-self:end;font-weight:600;font-size:14.5px;color:#fff;background:var(--btn);border-radius:999px;padding:9px 20px;text-decoration:none;transition:transform .3s var(--out)}
+.nav .joinlink:active{transform:scale(.96)}
+@media(hover:hover){.nav .links a:hover{color:var(--lt)}.nav .joinlink:hover{transform:translateY(-1px)}}
+body[data-sky="day"] .nav{background:rgba(251,249,246,.86);border-bottom-color:var(--line)}
+body[data-sky="day"] .nav .brand{color:var(--ink)}
+body[data-sky="day"] .nav .links a{color:var(--ink-soft)}
+@media(hover:hover){body[data-sky="day"] .nav .links a:hover{color:var(--terra-deep)}}
+@media(max-width:880px){.nav{grid-template-columns:auto 1fr}.nav .links{display:none}.nav .joinlink{justify-self:end}}
+
+/* ---------------------------------------------------------------- scenes */
+.scene{position:relative;padding:clamp(90px,14vh,170px) var(--edge);scroll-margin-top:var(--nav-h)}
+.wrap{max-width:1100px;margin:0 auto}
+.on-dark{color:var(--lt)}
+.on-dark .soft{color:var(--lt-soft)}
+.on-day .soft{color:var(--ink-soft)}
+
+/* ----------------------------------------------------------- hero (dawn) */
+#dawn{padding:0}
+html.js .h-tall{height:185vh}
+.h-stage{position:sticky;top:0;height:100dvh;min-height:560px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+html:not(.js) .h-stage,html.static .h-stage{position:relative;height:auto;min-height:100dvh;padding:120px var(--edge) 0}
+.h-glow{position:absolute;inset:0;background:radial-gradient(90% 65% at 50% 92%, rgba(217,164,65,.34), rgba(194,78,30,.14) 45%, transparent 70%);opacity:.25;pointer-events:none}
+.h-sun{position:absolute;left:50%;bottom:14vh;width:min(26vmin,210px);height:min(26vmin,210px);transform:translate(-50%,68%);pointer-events:none}
+.h-sun .core{position:absolute;inset:14%;border-radius:50%;background:radial-gradient(circle at 42% 36%, #F4C465, var(--gold) 58%, #B97E1C);box-shadow:0 0 90px 18px rgba(217,164,65,.35)}
+.h-sun .halo-ring{position:absolute;inset:-7%;border-radius:50%;border:2px solid rgba(217,164,65,.55)}
+.h-sky{position:absolute;left:0;right:0;bottom:0;height:30vh;min-height:170px;color:#0D0703;pointer-events:none}
+.h-sky svg{display:block;width:100%;height:100%}
+.h-inner{position:relative;z-index:2;text-align:center;padding:0 var(--edge);max-width:880px}
+.h-inner .clock{margin-bottom:26px}
+.h-inner h1{color:var(--lt);margin:0 auto;max-width:14ch}
+.h-inner .gu-echo{margin-top:18px;font-family:var(--gu);font-weight:600;font-size:clamp(1.3rem,3.4vw,2rem);color:var(--gold)}
+.h-inner .lede{margin:22px auto 0;color:var(--lt-soft)}
+.h-cue{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:3;text-shadow:0 1px 8px rgba(13,7,3,.8);
+  display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13.5px;color:var(--lt-soft);text-decoration:none}
+.h-cue .tick{width:1.5px;height:34px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s var(--out) infinite}
+@keyframes cue{0%{transform:scaleY(.2);transform-origin:top}45%{transform:scaleY(1)}100%{transform:scaleY(.2);transform-origin:bottom;opacity:0}}
+.frag{position:absolute;z-index:1;font-size:14px;color:var(--lt-soft);background:rgba(244,233,220,.05);border:1px solid rgba(244,233,220,.16);
+  border-radius:12px;padding:8px 14px;white-space:nowrap;animation:drift 7s ease-in-out infinite alternate;will-change:transform}
+.frag b{font-weight:600;color:var(--gold)}
+.frag.gu{font-family:var(--gu)}
+@keyframes drift{from{transform:translateY(-7px)}to{transform:translateY(9px)}}
+@media(max-width:760px){.frag{display:none}.frag.keep{display:block;font-size:12.5px}}
+@media(max-height:660px){.h-sky{height:20vh;min-height:110px}.h-inner h1{font-size:clamp(2rem,6vw,2.8rem)}.h-inner .lede{font-size:1rem}}
+
+/* ------------------------------------------------------------ otla (chat) */
+html.js .o-tall{height:300vh}
+.o-stage{position:sticky;top:0;min-height:100dvh;display:flex;align-items:center;padding:calc(var(--nav-h) + 24px) var(--edge) 40px}
+html:not(.js) .o-stage,html.static .o-stage{position:relative;min-height:0;padding:clamp(90px,14vh,170px) var(--edge)}
+.o-grid{display:grid;grid-template-columns:minmax(300px,430px) 1fr;gap:clamp(34px,6vw,84px);align-items:center;max-width:1100px;margin:0 auto;width:100%}
+.chatcard{background:#fff;border:1px solid var(--line);border-radius:22px;overflow:hidden;
+  box-shadow:0 50px 90px -55px rgba(58,32,12,.55)}
+.chatcard .ph{display:flex;align-items:center;gap:12px;padding:15px 18px;background:#F4EFE7;border-bottom:1px solid var(--line)}
+.chatcard .pav{width:36px;height:36px;border-radius:50%;background:var(--maroon);color:var(--lt);display:flex;align-items:center;justify-content:center;font-family:var(--gu);font-weight:600;font-size:16px}
+.chatcard .pt{font-weight:600;font-size:14.5px;line-height:1.25}
+.chatcard .ps{font-size:12px;color:var(--ink-soft)}
+.feed{height:min(56vh,430px);padding:16px 16px 18px;display:flex;flex-direction:column;justify-content:flex-end;gap:9px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent,#000 14%);mask-image:linear-gradient(to bottom,transparent,#000 14%)}
+.msg{max-width:88%}
+html.js .msg{opacity:0;transform:translateY(12px);transition:opacity .5s var(--out),transform .5s var(--out)}
+html.js .msg.in{opacity:1;transform:none}
+.msg.out{align-self:flex-end;text-align:right}
+.msg .who{font-size:11px;font-weight:600;color:var(--terra-deep);margin:0 6px 2px}
+.msg .bub{display:inline-block;text-align:left;padding:9px 14px;border-radius:15px 15px 15px 5px;background:#F6F1E9;border:1px solid var(--line);font-size:14px;line-height:1.45}
+.msg.out .bub{border-radius:15px 15px 5px 15px;background:#F4E4C2}
+.msg.pivot .bub{background:var(--maroon);border-color:var(--maroon);color:var(--lt);font-weight:500}
+.o-words .clock{margin-bottom:22px}
+.o-words h2{max-width:17ch}
+.o-words .soul{font-family:var(--gu);font-weight:600;font-size:clamp(1.1rem,2.3vw,1.4rem);color:var(--terra-deep);margin-top:20px;line-height:1.5;max-width:34ch}
+.o-words .bridge{margin-top:22px;color:var(--ink-soft);max-width:44ch;line-height:1.65}
+@media(max-width:880px){.o-grid{grid-template-columns:1fr;gap:30px}.o-words{order:-1}.feed{height:min(46vh,360px)}}
+
+/* ------------------------------------------------------------- ask scene */
+.ask .wrap{max-width:680px;text-align:center}
+.ask .clock{margin-bottom:22px}
+.ask .lede{margin:18px auto 0;color:var(--ink-soft)}
+.q-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:34px 0 22px}
+.qc{font-family:var(--body);font-weight:500;font-size:14px;color:var(--ink);background:#fff;border:1px solid var(--line);
+  border-radius:11px;padding:9px 16px;cursor:pointer;box-shadow:0 2px 0 var(--line);
+  transition:transform .3s var(--out),box-shadow .3s var(--out),border-color .3s,background-color .3s;-webkit-tap-highlight-color:transparent}
+.qc:active{transform:translateY(2px);box-shadow:0 0 0 var(--line)}
+.qc[aria-pressed="true"]{background:var(--maroon);border-color:var(--maroon);box-shadow:0 2px 0 var(--maroon);color:var(--lt)}
+@media(hover:hover){.qc:not([aria-pressed="true"]):hover{border-color:#CDBD9F;transform:translateY(-1px)}}
+.askbar{display:flex;align-items:center;gap:13px;padding:15px 19px;background:#fff;border:1.5px solid #D8CBB6;border-radius:16px;
+  text-align:left;box-shadow:0 26px 48px -36px rgba(58,32,12,.6)}
+.askbar .mag{flex:0 0 auto;color:var(--terra-deep)}
+.askbar .q{flex:1;font-size:clamp(15.5px,2.1vw,18px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.askbar .cur{display:inline-block;width:2px;height:1.05em;background:var(--terra);margin-left:1px;vertical-align:-2px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+.askbar .hint{flex:0 0 auto;font-size:12px;font-weight:600;color:var(--ink-soft);border:1px solid var(--line);border-radius:7px;padding:3px 9px}
+.parchis{display:flex;flex-direction:column;gap:18px;margin-top:26px;min-height:300px;text-align:left}
+.parchi{position:relative;background:#FFFEFB;border:1px solid var(--line);border-radius:4px;padding:20px 22px 16px;
+  box-shadow:0 18px 34px -26px rgba(58,32,12,.5)}
+html.js .parchi{opacity:0;transform:translateY(12px) rotate(0deg);transition:opacity .55s var(--out),transform .55s var(--out),box-shadow .35s var(--out)}
+html.js .parchi.in{opacity:1}
+html.js .parchi.in:nth-child(odd){transform:rotate(-1.1deg)}
+html.js .parchi.in:nth-child(even){transform:rotate(.9deg)}
+@media(hover:hover){html.js .parchi.in:hover{transform:rotate(0) translateY(-3px);box-shadow:0 26px 44px -26px rgba(58,32,12,.6)}}
+.parchi .pin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #F2CD7C, var(--gold) 60%, #8F6210);box-shadow:0 3px 5px rgba(40,20,5,.35)}
+.p-head{display:flex;align-items:flex-start;gap:13px}
+.p-av{flex:0 0 auto;width:42px;height:42px;border-radius:10px;background:#F8EFE2;border:1px solid #E2CFAE;display:flex;align-items:center;justify-content:center;font-family:var(--gu);font-weight:600;font-size:18px;color:var(--maroon)}
+.p-head h3{font-size:1.1rem;line-height:1.2}
+.p-trade{font-size:13px;color:var(--ink-soft);margin-top:1px}
+.stamp{margin-left:auto;flex:0 0 auto;font-weight:700;font-size:10px;letter-spacing:.13em;color:var(--maroon);
+  border:1.5px solid var(--maroon);border-radius:3px;padding:4px 8px;transform:rotate(-7deg);opacity:.85;white-space:nowrap}
+.nbchip{margin-left:auto;flex:0 0 auto;font-size:11.5px;font-weight:500;color:var(--ink-soft);background:#F6F1E9;border:1px solid var(--line);border-radius:999px;padding:4px 11px;white-space:nowrap}
+.p-say{margin-top:12px;font-size:15px;line-height:1.55}
+.p-vouch{margin-top:8px;font-family:var(--hand);font-size:19px;color:var(--terra-deep);line-height:1.2}
+@media(max-width:560px){.stamp,.nbchip{display:none}.parchis{min-height:340px}}
+
+/* ----------------------------------------------------------- dhaago scene */
+.dh .head{max-width:680px;margin:0 auto clamp(48px,8vh,84px);text-align:center}
+.dh .head .clock{margin-bottom:22px}
+.dh .head .lede{margin:18px auto 0;color:var(--ink-soft)}
+.thread{position:relative;max-width:820px;margin:0 auto}
+.thread::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:0;border-left:2px dashed #DCCFBA;transform:translateX(-50%)}
+.thread .ink{position:absolute;left:50%;top:0;width:0;border-left:2px dashed var(--terra);transform:translateX(-50%);height:0}
+.step{position:relative;width:calc(50% - 44px);padding:4px 0 clamp(38px,6vh,60px)}
+.step:nth-child(odd){margin-left:0;text-align:right}
+.step:nth-child(even){margin-left:calc(50% + 44px)}
+.step .knot{position:absolute;top:2px;width:34px;height:34px;border-radius:50%;background:#fff;border:2px solid #DCCFBA;
+  display:flex;align-items:center;justify-content:center;font-family:var(--gu);font-weight:700;font-size:15px;color:var(--ink-soft);
+  transition:border-color .5s,color .5s,background-color .5s}
+.step:nth-child(odd) .knot{right:-61px}
+.step:nth-child(even) .knot{left:-61px}
+.step.lit .knot{border-color:var(--terra);color:#fff;background:var(--terra)}
+.step h3{font-size:1.15rem}
+.step p{margin-top:6px;font-size:15px;color:var(--ink-soft);line-height:1.6}
+.step p em{font-style:italic;color:var(--ink)}
+.pledge{margin:clamp(20px,4vh,36px) auto 0;max-width:680px;text-align:center;font-family:var(--disp);font-size:clamp(1.05rem,2vw,1.3rem);color:var(--maroon);line-height:1.45}
+@media(max-width:700px){
+  .thread::before,.thread .ink{left:17px;transform:none}
+  .step{width:auto;margin:0 0 0 52px !important;text-align:left !important;padding-bottom:34px}
+  .step .knot{left:-52px !important;right:auto !important}
+}
+
+/* -------------------------------------------------------------- gali scene */
+#gali{padding:0}
+html.js .g-tall{height:330vh}
+.g-stage{position:sticky;top:0;height:100dvh;min-height:600px;display:flex;flex-direction:column;justify-content:center;gap:clamp(26px,4vh,44px);overflow:hidden;padding:calc(var(--nav-h) + 16px) 0 28px}
+html:not(.js) .g-stage,html.static .g-stage{position:relative;height:auto;min-height:0;padding:clamp(90px,14vh,150px) 0}
+.g-head{padding:0 var(--edge);max-width:1100px;margin:0 auto;width:100%}
+.g-head .clock{margin-bottom:20px}
+.g-head .lede{margin-top:14px;color:var(--ink-soft)}
+.g-track{display:flex;gap:clamp(16px,2vw,26px);padding:14px var(--edge) 22px;will-change:transform}
+.plate{flex:0 0 auto;width:min(78vw,300px);min-height:380px;border-radius:7px;padding:26px 24px;display:flex;flex-direction:column;color:var(--lt);
+  box-shadow:0 30px 50px -38px rgba(30,12,2,.7);transition:transform .4s var(--out)}
+.plate::before{content:"";position:absolute;inset:9px;border:1px solid rgba(244,233,220,.3);border-radius:4px;pointer-events:none}
+.plate{position:relative}
+@media(hover:hover){.plate:hover{transform:translateY(-6px)}}
+.plate.c1{background:var(--maroon)}
+.plate.c2{background:var(--leaf)}
+.plate.c3{background:#7E3110}
+.plate.c4{background:#2E2018}
+.plate.c5{background:var(--haldi-deep)}
+.pl-gu{font-family:var(--gu);font-weight:600;font-size:1.45rem;color:var(--gold);line-height:1.2}
+.plate.c5 .pl-gu{color:#FFF0D2}
+.plate h3{font-size:1.9rem;margin-top:2px;color:#FFF6EA}
+.pl-fact{margin-top:10px;font-size:14.5px;color:rgba(255,244,230,.92);line-height:1.5}
+.pl-ask{margin-top:auto;padding-top:26px;font-size:11.5px;font-weight:600;letter-spacing:.08em;color:rgba(255,244,230,.8)}
+.pl-whisper{font-family:var(--hand);font-size:21px;line-height:1.25;color:#FFE9C4;margin-top:4px}
+.g-bar{padding:0 var(--edge);max-width:1100px;margin:0 auto;width:100%}
+.g-progress{height:2px;background:var(--line);border-radius:2px;overflow:hidden;max-width:300px}
+.g-progress i{display:block;height:100%;width:0;background:var(--terra)}
+@media(max-width:760px){
+  html.js .g-tall{height:auto}
+  .g-stage{position:relative;height:auto;min-height:0;padding:clamp(80px,12vh,120px) 0}
+  .g-track{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .g-track::-webkit-scrollbar{display:none}
+  .plate{scroll-snap-align:center}
+  .g-bar{display:none}
+}
+
+/* -------------------------------------------------------------- parchi form */
+.give .wrap{max-width:600px;text-align:center}
+.give .clock{margin-bottom:22px}
+.give .lede{margin:18px auto 0;color:var(--ink-soft)}
+.padform{position:relative;margin-top:38px;background:#FFFEFB;border:1px solid var(--line);border-radius:6px;
+  padding:clamp(24px,4vw,36px);text-align:left;box-shadow:0 40px 70px -48px rgba(58,32,12,.55);transform:rotate(-.35deg)}
+.padform .pin{position:absolute;top:-7px;left:50%;transform:translateX(-50%);width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #F2CD7C, var(--gold) 60%, #8F6210);box-shadow:0 3px 5px rgba(40,20,5,.35)}
+.fl{display:block;font-size:12.5px;font-weight:600;letter-spacing:.05em;color:var(--ink-soft);margin:0 0 4px 1px}
+.cfield{width:100%;font-family:var(--body);font-size:16px;color:var(--ink);background:transparent;border:0;border-bottom:1.5px solid #DCCFBA;
+  padding:9px 2px 10px;margin-bottom:22px;border-radius:0;transition:border-color .3s}
+.cfield::placeholder{color:#9C8A6A}
+.cfield:focus{outline:none;border-color:var(--terra)}
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin:4px 0 24px}
+.catchip{font-family:var(--body);font-size:13.5px;font-weight:500;color:var(--ink-soft);background:#F6F1E9;border:1px solid var(--line);
+  border-radius:999px;padding:8px 15px;cursor:pointer;transition:all .25s var(--out);-webkit-tap-highlight-color:transparent}
+.catchip[aria-pressed="true"]{color:#fff;background:var(--terra-deep);border-color:var(--terra-deep)}
+@media(hover:hover){.catchip[aria-pressed="false"]:hover{border-color:#CDBD9F}}
+.cerr{color:var(--terra-deep);font-size:13.5px;font-weight:500;margin-bottom:10px;min-height:1.2em}
+.csubmit{width:100%}
+.cmicro{font-size:13px;color:var(--ink-soft);text-align:center;margin-top:16px;line-height:1.5}
+.creward{margin-top:14px;text-align:center;font-family:var(--hand);font-size:20px;color:var(--terra-deep)}
+.cdone{text-align:center;padding:24px 0}
+.cdone .gw{font-family:var(--gu);font-weight:600;color:var(--maroon);font-size:clamp(1.6rem,3.4vw,2.1rem);margin-bottom:12px}
+.cdone p{font-size:15.5px;color:var(--ink-soft);line-height:1.6;max-width:40ch;margin:0 auto}
+
+/* -------------------------------------------------------------- vision (dusk) */
+.vision{color:#FFF4EA}
+.vision .wrap{max-width:780px}
+.vision .clock{color:#FFD9A8;margin-bottom:26px}
+.vision h2{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.0;color:#FFF9F2;max-width:13ch}
+.vision .vcopy{margin-top:clamp(28px,5vh,46px);max-width:58ch}
+.vision .vcopy p{font-size:clamp(1rem,1.7vw,1.15rem);line-height:1.68;margin-bottom:16px;color:#FFE9D6}
+.vision .vcopy .vbelief{font-family:var(--disp);font-size:clamp(1.15rem,2.2vw,1.45rem);line-height:1.4;color:#FFF9F2}
+.vision .vcopy .vclosing{font-family:var(--gu);font-weight:600;font-size:clamp(1.1rem,2vw,1.35rem);color:#FFD9A8;margin-top:8px}
+.vision .btn{margin-top:18px;background:#FFF6EC;color:var(--terra-deep);box-shadow:0 16px 32px -18px rgba(40,10,0,.6)}
+
+/* --------------------------------------------------------------- join (night) */
+.joins{text-align:center}
+.joins .wrap{max-width:480px}
+.joins .clock{margin-bottom:24px}
+.joins h2{color:var(--lt)}
+.joins .lede{margin:18px auto 0;color:var(--lt-soft)}
+.divo{width:30px;height:46px;margin:0 auto 26px;position:relative}
+.divo .flame{position:absolute;left:50%;bottom:14px;width:14px;height:22px;transform:translateX(-50%);
+  background:radial-gradient(circle at 50% 80%, #FFE9A8, var(--gold) 55%, var(--terra) 95%);
+  border-radius:50% 50% 50% 50%/62% 62% 38% 38%;animation:flick 2.6s ease-in-out infinite alternate;
+  box-shadow:0 0 36px 10px rgba(217,164,65,.4)}
+.divo .bowl{position:absolute;left:50%;bottom:0;width:30px;height:13px;transform:translateX(-50%);background:var(--maroon);border-radius:0 0 16px 16px}
+@keyframes flick{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-52%) scale(1.08,.94)}}
+.joinform{margin-top:30px;text-align:left}
+.field{width:100%;font-family:var(--body);font-size:16.5px;color:var(--lt);background:rgba(244,233,220,.06);
+  border:1px solid var(--line-dk);border-radius:13px;padding:15px 17px;transition:border-color .3s}
+.field::placeholder{color:#9b8468}
+.field:focus{outline:none;border-color:var(--gold)}
+.consent{display:flex;gap:11px;align-items:flex-start;margin:16px 2px;cursor:pointer}
+.consent input{margin-top:4px;width:18px;height:18px;accent-color:var(--terra);flex:0 0 auto}
+.consent span{font-size:14px;color:var(--lt-soft);line-height:1.5}
+.jerr{color:#F0B08C;font-size:14px;font-weight:500;margin-bottom:10px;min-height:1.2em}
+.joinbtn{width:100%}
+.jnote{font-size:13.5px;color:var(--lt-soft);margin-top:20px;text-align:center}
+.joindone .gw{font-family:var(--gu);font-weight:600;color:var(--gold);font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:14px}
+
+/* ---------------------------------------------------------------- footer */
+footer{padding:clamp(60px,9vh,100px) var(--edge) calc(44px + env(safe-area-inset-bottom));text-align:center;color:var(--lt)}
+footer .mk{font-size:38px;color:var(--lt)}
+footer .anchors{margin-top:20px;font-family:var(--gu);font-weight:500;color:var(--gold);font-size:16px}
+footer .sig{display:block;margin-top:12px;font-size:13px;color:var(--lt-soft)}
+footer .fine{display:block;margin-top:26px;font-size:12px;color:#7d6750}
+
+/* -------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  html.js .rv,html.js .msg,html.js .parchi{opacity:1 !important;transform:none !important}
+  html.js .h-tall,html.js .o-tall,html.js .g-tall{height:auto}
+  .h-stage,.o-stage,.g-stage{position:relative;height:auto;min-height:0;padding-top:120px;padding-bottom:60px}
+  .g-stage{padding-left:0;padding-right:0}
+  .g-track{overflow-x:auto;scroll-snap-type:x mandatory}
+  .askbar .cur{animation:none}
+  .frag{animation:none}
+  .h-sun{transform:translate(-50%,74%)}
+}
+</style>
+</head>
+<body class="lock" data-sky="night">
+
+<!-- INTRO · before dawn -->
+<div id="intro" role="dialog" aria-label="Welcome">
+  <p class="i-gu" lang="gu">એ હાલો…</p>
+  <p class="i-en">Vadodara, we heard you.</p>
+  <span class="mk" aria-label="ae halo"><span class="ae" lang="gu">એ</span>hal<span class="o">o<span class="ring"></span></span></span>
+  <p class="i-sub">A homegrown beginning for the city we call our own.</p>
+</div>
+<button class="i-enter" id="iEnter">Enter the city</button>
+
+<!-- NAV -->
+<nav class="nav" id="nav" aria-label="Main">
+  <button class="brand" id="brand" aria-label="ae halo, back to top">
+    <span class="mk"><span class="ae" lang="gu">એ</span>hal<span class="o">o<span class="ring"></span></span></span>
+  </button>
+  <div class="links">
+    <a href="#dhaago">How it works</a>
+    <a href="#gali">Neighbourhoods</a>
+    <a href="#give">Share a local</a>
+    <a href="#vision">Our vision</a>
+  </div>
+  <a class="joinlink" href="#join">Join</a>
+</nav>
+
+<main>
+
+<!-- ============ 05:58 · FIRST LIGHT (hero) ============ -->
+<section class="scene h-tall on-dark" id="dawn" data-sky="dawn" aria-label="First light over Vadodara">
+  <div class="h-stage">
+    <div class="h-glow" id="hGlow"></div>
+    <div class="h-sun" id="hSun" aria-hidden="true"><span class="halo-ring"></span><span class="core"></span></div>
+
+    <!-- early-morning thoughts drifting over the city -->
+    <p class="frag keep" style="left:6%;top:21%;animation-delay:-2s">tiffin in <b>Alkapuri</b></p>
+    <p class="frag" style="left:10%;top:67%;animation-delay:-5s">quiet café near <b>Akota</b></p>
+    <p class="frag keep" style="right:7%;top:24%;animation-delay:-3.4s">electrician in <b>Gotri</b></p>
+    <p class="frag gu" lang="gu" style="right:10%;top:63%;animation-delay:-1.2s">અકોટાનો દરજી</p>
+    <p class="frag" style="left:24%;top:9%;animation-delay:-6s">tutor in <b>Karelibaug</b></p>
+    <p class="frag" style="right:24%;top:8%;animation-delay:-4.2s">Jain dabba near <b>Manjalpur</b></p>
+
+    <div class="h-inner" id="hInner">
+      <p class="clock rv"><span class="t" lang="gu">૦૫:૫૮</span> first light over Sursagar</p>
+      <h1 class="rv d1">The city already knows.</h1>
+      <p class="gu-echo rv d2" lang="gu">વડોદરાને બધી ખબર છે.</p>
+      <p class="lede rv d3">Halo is Vadodara's own companion. Ask for a tiffin, a tutor, an electrician, anything at all, and hear back the way you would from a neighbour who knows everyone.</p>
+    </div>
+
+    <svg class="h-sky" viewBox="0 0 1440 220" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+      <g fill="currentColor">
+        <!-- ground -->
+        <rect x="0" y="190" width="1440" height="30"/>
+        <!-- old-city rooftops, left -->
+        <path d="M0 190 L0 150 L60 150 L60 132 L120 132 L120 158 L170 158 L170 142 L230 142 L230 190 Z"/>
+        <!-- Kirti Stambh column -->
+        <rect x="262" y="92" width="16" height="98"/><rect x="256" y="84" width="28" height="10" rx="2"/><rect x="259" y="74" width="22" height="8" rx="3"/>
+        <!-- arched gate -->
+        <path d="M320 190 L320 138 Q352 112 384 138 L384 190 Z"/>
+        <!-- palace block with central dome and two chhatris -->
+        <rect x="470" y="140" width="300" height="50"/>
+        <rect x="492" y="112" width="34" height="30"/><path d="M488 112 Q509 88 530 112 Z"/>
+        <rect x="714" y="112" width="34" height="30"/><path d="M710 112 Q731 88 752 112 Z"/>
+        <rect x="586" y="98" width="68" height="44"/>
+        <path d="M580 98 Q620 56 660 98 Z"/>
+        <circle cx="620" cy="54" r="4"/><rect x="618.6" y="54" width="2.8" height="14"/>
+        <!-- clock tower (Nyay Mandir-ish) -->
+        <rect x="858" y="106" width="44" height="84"/>
+        <path d="M852 106 Q880 76 908 106 Z"/>
+        <circle cx="880" cy="124" r="11" fill="currentColor"/><circle cx="880" cy="124" r="8" fill="#20120C"/>
+        <rect x="879.2" y="118" width="1.6" height="6.5" fill="currentColor"/><rect x="880" y="123.2" width="5" height="1.6" fill="currentColor"/>
+        <!-- mid rooftops -->
+        <path d="M952 190 L952 148 L1010 148 L1010 162 L1064 162 L1064 144 L1118 144 L1118 190 Z"/>
+        <!-- the vad: a banyan on the right -->
+        <rect x="1222" y="142" width="12" height="48"/>
+        <rect x="1206" y="156" width="5" height="34"/><rect x="1248" y="152" width="5" height="38"/>
+        <ellipse cx="1228" cy="112" rx="86" ry="44"/>
+        <ellipse cx="1162" cy="130" rx="40" ry="24"/><ellipse cx="1300" cy="128" rx="44" ry="26"/>
+        <!-- right edge homes -->
+        <path d="M1382 190 L1382 152 L1440 152 L1440 190 Z"/>
+      </g>
+    </svg>
+
+    <a class="h-cue" href="#otla"><span>scroll, the city is waking</span><span class="tick"></span></a>
+  </div>
+</section>
+
+<!-- ============ 07:43 · CHAI ROUND ONE (otla / the group chat) ============ -->
+<section class="scene o-tall on-day" id="otla" data-sky="day" aria-label="How the city already asks">
+  <div class="o-stage">
+    <div class="o-grid">
+      <div class="chatcard rv" aria-label="A Vadodara society group chat">
+        <div class="ph">
+          <div class="pav" lang="gu">વ</div>
+          <div><div class="pt">Vadodara, every day</div><div class="ps">the society group, any morning</div></div>
+        </div>
+        <div class="feed" id="feed">
+          <div class="msg"><p class="who">Rohit</p><p class="bub">Good electrician in Gotri? Fan bandh thai gayo 😭</p></div>
+          <div class="msg out"><p class="who">Meena</p><p class="bub">Mara society ma ek aavyo'to, on time aavyo. Sending.</p></div>
+          <div class="msg"><p class="who">Jay</p><p class="bub">Pure Jain dabba near Manjalpur? Office lunch maate.</p></div>
+          <div class="msg"><p class="who">Jay</p><p class="bub">Please no "healthy" dabba: 2 rotli ane sadness.</p></div>
+          <div class="msg"><p class="who">Riya</p><p class="bub">Quiet café for laptop work near Akota?</p></div>
+          <div class="msg out"><p class="who">Sanjay</p><p class="bub">Quiet means actually quiet ke Instagram quiet? 😄</p></div>
+          <div class="msg"><p class="who">Dev</p><p class="bub">Laptop repair trustworthy? Last time bill joine j hu hang thai gayo.</p></div>
+          <div class="msg"><p class="who">Nisha</p><p class="bub">Good tutor for 10th maths?</p></div>
+          <div class="msg out"><p class="who">Sanjay</p><p class="bub">Rupal aunty na group ma puchho, emne badha ne khabar hoy.</p></div>
+          <div class="msg pivot"><p class="who">Dev</p><p class="bub">See, everyone knows someone. But no one knows where to find it later.</p></div>
+        </div>
+      </div>
+      <div class="o-words">
+        <p class="clock rv"><span class="t" lang="gu">૦૭:૪૩</span> chai round one</p>
+        <h2 class="rv d1">The answers are already here. They are just scattered.</h2>
+        <p class="soul rv d2" lang="gu">જવાબો પણ અહીં છે. લોકો પણ અહીં છે. બસ બધું એક જગ્યાએ નથી.</p>
+        <p class="bridge rv d3">Ae Halo gathers these trusted answers into one calm place, starting with the recommendations people already pass hand to hand.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11:20 · MID-MORNING ERRANDS (ask) ============ -->
+<section class="scene ask on-day" id="ask" data-sky="day" aria-label="Ask Halo">
+  <div class="wrap">
+    <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૧:૨૦</span> mid-morning errands</p>
+    <h2 class="rv d1" style="margin:0 auto">Ask Halo the way you ask the group.</h2>
+    <p class="lede rv d2">No paid ranking, no ten open tabs. Real names, carried by the people who already trust them.</p>
+
+    <div class="q-chips rv d2" id="qChips" role="group" aria-label="Try a question"></div>
+
+    <div class="askbar rv d3">
+      <svg class="mag" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <div class="q" id="q">tiffin in Alkapuri</div>
+      <span class="hint" lang="gu">પૂછો</span>
+    </div>
+    <div class="parchis" id="parchis"></div>
+  </div>
+</section>
+
+<!-- ============ 14:00 · THE SLOW AFTERNOON (dhaago / trust) ============ -->
+<section class="scene dh on-day" id="dhaago" data-sky="day" aria-label="How trust works on Halo">
+  <div class="wrap">
+    <div class="head">
+      <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૪:૦૦</span> the slow afternoon</p>
+      <h2 class="rv d1" style="margin:0 auto">How a name earns its halo.</h2>
+      <p class="lede rv d2">Five small stitches, the same way trust has always travelled here.</p>
+    </div>
+    <div class="thread" id="thread">
+      <span class="ink" id="threadInk" aria-hidden="true"></span>
+      <div class="step rv"><span class="knot" lang="gu">૧</span><h3>Someone asks</h3><p><em>"Good electrician in Gotri?" "Pure Jain dabba near Manjalpur?"</em> These questions already happen every day.</p></div>
+      <div class="step rv"><span class="knot" lang="gu">૨</span><h3>You remember someone good</h3><p>A person, shop, café, tutor, home cook, repair guy, local maker, or business that actually helped you.</p></div>
+      <div class="step rv"><span class="knot" lang="gu">૩</span><h3>You add the basics</h3><p>Name, area, contact if you have it, and why you trusted them. Less than a minute.</p></div>
+      <div class="step rv"><span class="knot" lang="gu">૪</span><h3>Halo checks before showing</h3><p>We look for consent, context, duplicates, and obvious spam before anything becomes useful to others.</p></div>
+      <div class="step rv"><span class="knot" lang="gu">૫</span><h3>The next person decides better</h3><p>Not because of paid ranking. Because someone local shared something real.</p></div>
+    </div>
+    <p class="pledge rv">Trust before promotion. Useful information first; noise never.</p>
+  </div>
+</section>
+
+<!-- ============ 17:15 · STREETS FILL UP AGAIN (gali / neighbourhoods) ============ -->
+<section class="scene g-tall on-day" id="gali" data-sky="day" aria-label="Vadodara neighbourhoods">
+  <div class="g-stage">
+    <div class="g-head">
+      <p class="clock rv"><span class="t" lang="gu">૧૭:૧૫</span> streets fill up again</p>
+      <h2 class="rv d1">Every gali has a genius.</h2>
+      <p class="lede rv d2">Halo grows neighbourhood by neighbourhood, the way trust does.</p>
+    </div>
+    <div class="g-track" id="gTrack" tabindex="0" aria-label="Neighbourhood boards, scroll horizontally">
+      <article class="plate c1"><p class="pl-gu" lang="gu">અલકાપુરી</p><h3>Alkapuri</h3><p class="pl-fact">Old money, new cafés, and the city's most opinionated breakfast tables.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"tiffin without onion-garlic?"</p></article>
+      <article class="plate c2"><p class="pl-gu" lang="gu">અકોટા</p><h3>Akota</h3><p class="pl-fact">Quiet streets, the river close by, balconies full of plants.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"quiet café for laptop work?"</p></article>
+      <article class="plate c3"><p class="pl-gu" lang="gu">ગોત્રી</p><h3>Gotri</h3><p class="pl-fact">Growing faster than its roads; everyone needs a fix-it person.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"electrician who actually shows up?"</p></article>
+      <article class="plate c4"><p class="pl-gu" lang="gu">કારેલીબાગ</p><h3>Karelibaug</h3><p class="pl-fact">Akhada mornings, tuition evenings, weddings in between.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"10th maths tutor, patient one?"</p></article>
+      <article class="plate c5"><p class="pl-gu" lang="gu">માંજલપુર</p><h3>Manjalpur</h3><p class="pl-fact">Where the great Jain dabba question gets settled daily.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"pure Jain dabba near office?"</p></article>
+      <article class="plate c1"><p class="pl-gu" lang="gu">માંડવી</p><h3>Mandvi</h3><p class="pl-fact">The old city keeps the oldest answers, and the best fafda.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"who still repairs HMT watches?"</p></article>
+      <article class="plate c2"><p class="pl-gu" lang="gu">ફતેહગંજ</p><h3>Fatehgunj</h3><p class="pl-fact">Students, shawarma, lights that stay on late.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"hostel-friendly mess nearby?"</p></article>
+      <article class="plate c3"><p class="pl-gu" lang="gu">સયાજીગંજ</p><h3>Sayajigunj</h3><p class="pl-fact">Every train story in Vadodara starts or ends here.</p><p class="pl-ask">ASKED HERE YESTERDAY</p><p class="pl-whisper">"safe late-night auto wala?"</p></article>
+    </div>
+    <div class="g-bar"><div class="g-progress" aria-hidden="true"><i id="gFill"></i></div></div>
+  </div>
+</section>
+
+<!-- ============ 18:40 · NEIGHBOURS ON THE OTLA (share a local) ============ -->
+<section class="scene give on-day" id="give" data-sky="day" aria-label="Share a trusted local">
+  <div class="wrap">
+    <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૧૮:૪૦</span> neighbours on the otla</p>
+    <h2 class="rv d1" style="margin:0 auto">Leave a parchi for the city.</h2>
+    <p class="lede rv d2">Had a good local experience recently? If someone showed up, helped properly, charged fairly, made great food or taught well, write them down. Someone in Vadodara is looking for exactly that.</p>
+
+    <div class="padform rv d2" id="cform">
+      <span class="pin" aria-hidden="true"></span>
+      <div id="cpre">
+        <p class="cerr" id="cErr" role="alert"></p>
+        <label class="fl" for="cWho">Who helped you?</label>
+        <input class="cfield" id="cWho" type="text" placeholder="Name / shop / service person" autocomplete="off">
+        <span class="fl" id="catLabel">What did they help with?</span>
+        <div class="chips" id="cChips" role="group" aria-labelledby="catLabel"></div>
+        <label class="fl" for="cArea">Area</label>
+        <input class="cfield" id="cArea" type="text" placeholder="Gotri, Alkapuri, Akota, Manjalpur, Karelibaug, Mandvi…" autocomplete="off">
+        <label class="fl" for="cContact">Contact, if you have it</label>
+        <input class="cfield" id="cContact" type="text" placeholder="Phone / Instagram / shop name" autocomplete="off">
+        <label class="fl" for="cWhy">Why do you trust them?</label>
+        <input class="cfield" id="cWhy" type="text" placeholder="Came on time, fair price, good food, clean work…" autocomplete="off">
+        <button class="btn csubmit" id="cSubmit">Share this trusted local</button>
+        <p class="cmicro">Takes less than a minute. We check before anything goes public.</p>
+        <p class="creward">early contributors get remembered by the city ✲</p>
+      </div>
+      <div class="cdone" id="cDone" hidden>
+        <p class="gw" lang="gu">આભાર.</p>
+        <p>Added. You are now an early contributor; your recommendation will help the next person in Vadodara choose better.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19:10 · DIVA-BATTI TIME (vision, dusk) ============ -->
+<section class="scene vision" id="vision" data-sky="dusk" aria-label="Our vision">
+  <div class="wrap">
+    <p class="clock rv"><span class="t" lang="gu">૧૯:૧૦</span> diva-batti time</p>
+    <h2 class="rv d1">Vadodara is already ready.</h2>
+    <div class="vcopy">
+      <p class="rv d2">The city already has the people, places, talent, food, culture, makers, and trust. Nothing is missing. Everything is scattered: across WhatsApp groups, saved numbers, neighbours, society circles, and word of mouth.</p>
+      <p class="rv d2">Ae Halo starts by bringing trusted local discovery into one place. Not a noisy directory, not another generic platform.</p>
+      <p class="vbelief rv d3">The belief is bigger: Vadodara deserves its own homegrown companion. A place to ask, find, trust, support, participate, and belong.</p>
+      <p class="vclosing rv d3" lang="gu">આપણા શહેરની અંદરથી, આપણા શહેર માટે.</p>
+    </div>
+    <a class="btn rv d3" href="#join">Join the beginning</a>
+  </div>
+</section>
+
+<!-- ============ 22:30 · THE CITY BEFORE SLEEP (join, night) ============ -->
+<section class="scene joins on-dark" id="join" data-sky="night" aria-label="Join Halo">
+  <div class="wrap">
+    <div id="joinPre">
+      <div class="divo rv" aria-hidden="true"><span class="flame"></span><span class="bowl"></span></div>
+      <p class="clock rv" style="justify-content:center"><span class="t" lang="gu">૨૨:૩૦</span> the city before sleep</p>
+      <h2 class="rv d1" style="margin:0 auto">Be one of the first to shape Halo.</h2>
+      <p class="lede rv d2">Join early, share what Vadodara should know, and help build the city's trusted companion from the very first day.</p>
+      <div class="joinform rv d3">
+        <label class="fl" for="contact" style="color:var(--lt-soft)">WhatsApp number or email</label>
+        <input class="field" id="contact" type="text" inputmode="email" autocomplete="off" placeholder="So we can call you in first">
+        <label class="consent"><input type="checkbox" id="consent"><span>Only contact me about Ae Halo. Nothing else, ever.</span></label>
+        <p class="jerr" id="joinErr" role="alert"></p>
+        <button class="btn joinbtn" id="joinSubmit">Count me in</button>
+        <p class="jnote">Early contributors get first access and community recognition.</p>
+      </div>
+    </div>
+    <div class="joindone" id="joinDone" hidden>
+      <p class="gw" lang="gu">આભાર.</p>
+      <h2 style="margin:0 auto">You are in. You helped start this.</h2>
+      <p class="lede" style="margin:18px auto 0">We will tell you the moment it opens. <span lang="gu">એ હાલો.</span></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer data-sky="night">
+  <span class="mk"><span class="ae" lang="gu">એ</span>hal<span class="o">o<span class="ring"></span></span></span>
+  <p class="anchors" lang="gu">આપણી માટીનું · વિશ્વાસ · શોધ · પોતાપણું</p>
+  <span class="sig">built in Vadodara, for Vadodara</span>
+  <span class="fine">Names shown above are illustrative during the early community beta.</span>
+</footer>
+
+<script>
+(function(){
+"use strict";
+document.documentElement.classList.add("js");
+var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(reduce) document.documentElement.classList.add("static");
+var vh = function(){ return window.innerHeight; };
+function setCookie(n,v,d){ try{ var e=new Date(); e.setTime(e.getTime()+d*864e5);
+  document.cookie=n+"="+encodeURIComponent(v)+";expires="+e.toUTCString()+";path=/;SameSite=Lax"; }catch(x){} }
+
+/* ---------------------------------------------------------------- intro */
+var intro=document.getElementById("intro"), iBtn=document.getElementById("iEnter"), nav=document.getElementById("nav");
+function enter(){
+  if(intro.classList.contains("gone")) return;
+  intro.classList.add("gone"); iBtn.hidden=true;
+  document.body.classList.remove("lock");
+  document.body.dataset.sky="dawn";
+  nav.classList.add("show");
+  startAsk();
+}
+iBtn.addEventListener("click",enter);
+document.addEventListener("keydown",function(e){ if(!intro.classList.contains("gone")&&(e.key==="Enter"||e.key==="Escape")) enter(); });
+setTimeout(enter, reduce ? 0 : 5400);
+
+document.getElementById("brand").addEventListener("click",function(){ window.scrollTo({top:0,behavior:reduce?"auto":"smooth"}); });
+
+/* --------------------------------------------------------- scene skies */
+var skySections=[].slice.call(document.querySelectorAll("[data-sky]")).filter(function(el){return el.tagName==="SECTION"||el.tagName==="FOOTER";});
+if("IntersectionObserver" in window){
+  var sio=new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting && !document.body.classList.contains("lock")) document.body.dataset.sky=en.target.dataset.sky; });
+  },{rootMargin:"-42% 0px -42%",threshold:0});
+  skySections.forEach(function(s){ sio.observe(s); });
+}
+
+/* ------------------------------------------------------------- reveals */
+if("IntersectionObserver" in window && !reduce){
+  var rio=new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); rio.unobserve(en.target);} });
+  },{threshold:.15});
+  document.querySelectorAll(".rv").forEach(function(e){ rio.observe(e); });
+}else{
+  document.querySelectorAll(".rv").forEach(function(e){ e.classList.add("in"); });
+}
+
+/* ------------------------------------------------------- scroll scrubs */
+function progressOf(el){
+  var r=el.getBoundingClientRect();
+  var total=r.height - vh();
+  if(total<=0) return r.top<0?1:0;
+  return Math.min(1, Math.max(0, -r.top/total));
+}
+var scrubs=[];
+
+/* hero: the sun rises as you scroll */
+var hSun=document.getElementById("hSun"), hGlow=document.getElementById("hGlow"),
+    hInner=document.getElementById("hInner"), dawnSec=document.getElementById("dawn");
+if(!reduce){
+  var frags=[].slice.call(document.querySelectorAll(".frag"));
+  scrubs.push(function(){
+    var p=progressOf(dawnSec);
+    hSun.style.transform="translate(-50%,"+(68-p*120)+"%)";
+    hGlow.style.opacity=Math.min(.85,.25+p*.75).toFixed(3);
+    hInner.style.transform="translateY("+(-p*90)+"px)";
+    hInner.style.opacity=Math.max(0,1-p*1.45).toFixed(3);
+    frags.forEach(function(f){ f.style.opacity=Math.max(0,1-p*1.8).toFixed(3); });
+  });
+}
+
+/* otla: messages arrive as you scroll */
+var otla=document.getElementById("otla"), msgs=[].slice.call(document.querySelectorAll("#feed .msg"));
+if(reduce){ msgs.forEach(function(m){m.classList.add("in");}); }
+else{
+  scrubs.push(function(){
+    var p=progressOf(otla);
+    var count=Math.floor(p*(msgs.length+1));
+    msgs.forEach(function(m,i){ m.classList.toggle("in", i<count); });
+  });
+}
+
+/* dhaago: the thread stitches itself */
+var thread=document.getElementById("thread"), ink=document.getElementById("threadInk"),
+    steps=[].slice.call(document.querySelectorAll(".step"));
+if(reduce){ ink.style.height="100%"; steps.forEach(function(s){s.classList.add("lit");}); }
+else{
+  scrubs.push(function(){
+    var r=thread.getBoundingClientRect();
+    var p=Math.min(1, Math.max(0, (vh()*.72 - r.top)/r.height));
+    ink.style.height=(p*100)+"%";
+    var filled=r.height*p;
+    steps.forEach(function(s){ s.classList.toggle("lit", (s.offsetTop+20)<filled); });
+  });
+}
+
+/* gali: horizontal pan through the neighbourhoods (desktop only) */
+var galiSec=document.getElementById("gali"), gTrack=document.getElementById("gTrack"),
+    gFill=document.getElementById("gFill");
+var galiActive=function(){ return !reduce && window.innerWidth>760; };
+scrubs.push(function(){
+  if(!galiActive()){ gTrack.style.transform=""; return; }
+  var p=progressOf(galiSec);
+  var max=Math.max(0, gTrack.scrollWidth - document.documentElement.clientWidth);
+  gTrack.style.transform="translateX("+(-p*max)+"px)";
+  if(gFill) gFill.style.width=(p*100)+"%";
+});
+
+var ticking=false;
+function onScroll(){
+  if(ticking) return; ticking=true;
+  requestAnimationFrame(function(){ scrubs.forEach(function(f){f();}); ticking=false; });
+}
+window.addEventListener("scroll",onScroll,{passive:true});
+window.addEventListener("resize",onScroll);
+onScroll();
+
+/* ----------------------------------------------------------- ask scene */
+var QUERIES=[
+  {q:"tiffin in Alkapuri", res:[
+    {av:"ગ",nm:"Gokul Tiffin",trade:"Pure Jain · Alkapuri",t:1,say:"“No onion, no garlic. Finally a dabba I trust.”",vouch:"Priya-ben vouches · 3 neighbours agree"},
+    {av:"અ",nm:"Annapurna",trade:"Home tiffin · Alkapuri",t:0,say:"“Never misses a day, even in monsoon.”",vouch:"added by Rohit, Sama Road"}
+  ]},
+  {q:"quiet café near Akota", res:[
+    {av:"ર",nm:"The Reading Room",trade:"Café · Akota",t:1,say:"“Actually quiet, plug points, they don't rush you.”",vouch:"Riya vouches · 4 neighbours agree"},
+    {av:"ક",nm:"Kaapi Corner",trade:"Café · Akota",t:0,say:"“Calm mornings, good filter coffee.”",vouch:"added by Dev, Akota"}
+  ]},
+  {q:"electrician in Gotri", res:[
+    {av:"ભ",nm:"Bharat-bhai",trade:"Electrician · Gotri",t:1,say:"“Came same day. Didn't vanish with the advance.”",vouch:"Meena vouches · 5 neighbours agree"},
+    {av:"સ",nm:"Suresh",trade:"Electrician · Gotri to Akota",t:0,say:"“Fair rate, didn't inflate it halfway.”",vouch:"added by Sanjay, Gotri"}
+  ]},
+  {q:"10th maths tutor, Karelibaug", res:[
+    {av:"ફ",nm:"Falguni ma'am",trade:"Maths tuition · Karelibaug",t:1,say:"“Patient with my son; results showed in one term.”",vouch:"Nisha vouches · 2 neighbours agree"},
+    {av:"શ",nm:"Shah Classes",trade:"Tuition · Karelibaug",t:0,say:"“Small batches, no factory feel.”",vouch:"added by Jay, Karelibaug"}
+  ]}
+];
+var qEl=document.getElementById("q"), pWrap=document.getElementById("parchis"), chipsWrap=document.getElementById("qChips");
+var qi=0, timers=[], askStarted=false, holdUntil=0;
+function clearTimers(){ timers.forEach(clearTimeout); timers=[]; }
+function parchi(r){
+  var a=document.createElement("article"); a.className="parchi";
+  var mark = r.t ? '<span class="stamp">HALO TRUSTED ✓</span>' : '<span class="nbchip">added by a neighbour</span>';
+  a.innerHTML='<span class="pin" aria-hidden="true"></span>'
+    +'<div class="p-head"><span class="p-av" lang="gu">'+r.av+'</span><div><h3>'+r.nm+'</h3><p class="p-trade">'+r.trade+'</p></div>'+mark+'</div>'
+    +'<p class="p-say">'+r.say+'</p><p class="p-vouch">'+r.vouch+'</p>';
+  return a;
+}
+function showSet(i,instant){
+  pWrap.innerHTML="";
+  QUERIES[i].res.forEach(function(r,k){
+    var c=parchi(r); pWrap.appendChild(c);
+    if(instant||reduce){ c.classList.add("in"); }
+    else timers.push(setTimeout(function(){ c.classList.add("in"); }, 160+k*180));
+  });
+  chipsWrap.querySelectorAll(".qc").forEach(function(b,k){ b.setAttribute("aria-pressed", k===i ? "true":"false"); });
+}
+function typeQuery(i,done){
+  var s=QUERIES[i].q;
+  qEl.innerHTML='<span></span><span class="cur"></span>';
+  var slot=qEl.firstChild, n=0;
+  (function t(){ if(n<=s.length){ slot.textContent=s.slice(0,n); n++; timers.push(setTimeout(t,46)); }
+    else { timers.push(setTimeout(function(){ qEl.textContent=s; done(); },360)); } })();
+}
+function cycle(){
+  if(reduce) return;
+  timers.push(setTimeout(function step(){
+    if(Date.now()<holdUntil){ timers.push(setTimeout(step,800)); return; }
+    qi=(qi+1)%QUERIES.length;
+    clearTimers();
+    pWrap.querySelectorAll(".parchi").forEach(function(c){ c.classList.remove("in"); });
+    timers.push(setTimeout(function(){ typeQuery(qi,function(){ showSet(qi); cycle(); }); },450));
+  }, 5600));
+}
+QUERIES.forEach(function(item,i){
+  var b=document.createElement("button");
+  b.type="button"; b.className="qc"; b.textContent=item.q; b.setAttribute("aria-pressed", i===0?"true":"false");
+  b.addEventListener("click",function(){
+    qi=i; clearTimers(); holdUntil=Date.now()+12000;
+    qEl.textContent=item.q; showSet(i,true); cycle();
+  });
+  chipsWrap.appendChild(b);
+});
+function startAsk(){
+  if(askStarted) return; askStarted=true;
+  if(reduce){ qEl.textContent=QUERIES[0].q; showSet(0,true); return; }
+  typeQuery(0,function(){ showSet(0); cycle(); });
+}
+
+/* ------------------------------------------------------- parchi form */
+var CATS=["Tiffin","Electrician","Tutor","Café","Repair","Home food","Tailor","Doctor","Salon","Local shop","Other"];
+var cChips=document.getElementById("cChips"), chosenCat="";
+CATS.forEach(function(c){
+  var b=document.createElement("button"); b.type="button"; b.className="catchip"; b.textContent=c; b.setAttribute("aria-pressed","false");
+  b.addEventListener("click",function(){
+    chosenCat = chosenCat===c ? "" : c;
+    cChips.querySelectorAll(".catchip").forEach(function(x){ x.setAttribute("aria-pressed", x.textContent===chosenCat ? "true":"false"); });
+  });
+  cChips.appendChild(b);
+});
+document.getElementById("cSubmit").addEventListener("click",function(){
+  var who=document.getElementById("cWho").value.trim(), why=document.getElementById("cWhy").value.trim(),
+      area=document.getElementById("cArea").value.trim(), contact=document.getElementById("cContact").value.trim(),
+      err=document.getElementById("cErr");
+  if(!who){ err.textContent="Just their name or shop: that's the one thing we need."; return; }
+  if(!chosenCat){ err.textContent="Pick what they helped with."; return; }
+  err.textContent="";
+  try{ console.log("[recommendation]",{who:who,category:chosenCat,area:area,contact:contact,why:why,at:new Date().toISOString()}); }catch(x){}
+  document.getElementById("cpre").hidden=true;
+  document.getElementById("cDone").hidden=false;
+});
+
+/* --------------------------------------------------------------- join */
+document.getElementById("joinSubmit").addEventListener("click",function(){
+  var v=document.getElementById("contact").value.trim(), ok=document.getElementById("consent").checked,
+      err=document.getElementById("joinErr");
+  var email=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v), phone=/^[+]?[\d\s-]{7,}$/.test(v);
+  if(!v||(!email&&!phone)){ err.textContent="Hmm, that doesn't look right. Mind checking?"; return; }
+  if(!ok){ err.textContent="Just tick the box so we can keep it."; return; }
+  err.textContent=""; setCookie("halo_consent","1",365);
+  try{ console.log("[waitlist]",{contact:v,consent:true,at:new Date().toISOString()}); }catch(x){}
+  document.getElementById("joinPre").hidden=true;
+  document.getElementById("joinDone").hidden=false;
+});
+})();
+</script>
+</body>
+</html>
