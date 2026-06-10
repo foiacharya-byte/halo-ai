@@ -1,0 +1,12 @@
+thread_id,category,intent,pain_code,search_effort,specificity,unmet_need_paraphrase,got_usable_answer,halo_relevance,notes
+R001,,,,,,,,,
+R002,,,,,,,,,
+R003,,,,,,,,,
+# category: C1-C12 (see deep-dive.md / reddit-research-plan.md)
+# intent: seek|vent|info|offer|review
+# pain_code: P1 cant-find | P2 choice-paralysis | P3 reliability-doubt | P4 price-opacity | P5 quality-inconsistency | P6 ghosting | P7 distance | P8 language | P9 long-tail | P10 urgent
+# search_effort: none|asked-friends|google-justdial|tried-apps|last-resort
+# specificity: vague|area|budget|time|quality
+# got_usable_answer: yes|partial|no|only-dms
+# halo_relevance: high|medium|low
+# RULES: no usernames, no verbatim quotes, no phone numbers, no personal names. Paraphrase only.

@@ -1,0 +1,11 @@
+thread_id,language_mix,romanized_or_script,emotion_language,logistics_language,local_vocab_paraphrase,quality_words_paraphrase,ask_tone,ask_length,formatting_habit
+R001,,,,,,,,,
+R002,,,,,,,,,
+# language_mix: gujarati|hindi|english|guj-eng|hin-eng|mixed
+# romanized_or_script: roman|gujarati-script|devanagari|mixed
+# emotion_language / logistics_language: which language used for feeling vs facts
+# local_vocab_paraphrase: generalized terms only (area naming, money, trust words) - NEVER a copied sentence
+# quality_words_paraphrase: how "good"/"avoid" is expressed (generalized)
+# ask_tone: casual|urgent|apologetic|frustrated|communal
+# ask_length: one-liner|short|detailed
+# RULES: capture PATTERNS not posts. No verbatim quotes, no usernames, no PII.

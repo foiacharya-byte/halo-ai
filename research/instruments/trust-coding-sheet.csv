@@ -1,0 +1,9 @@
+thread_id,trust_signal_sought,trust_proof_offered,trust_breakdown,trusted_source_type,verification_gap_paraphrase
+R001,,,,,
+R002,,,,,
+R003,,,,,
+# trust_signal_sought (TS): TS1 has-anyone-used | TS2 reliability | TS3 fair-price | TS4 quality-evidence | TS5 local-known | TS6 safety
+# trust_proof_offered (TP): TP1 first-hand-account | TP2 bare-number | TP3 self-promo | TP4 vouch-for-local | TP5 photos-portfolio | TP6 warning-negative
+# trust_breakdown (TB): TB1 unverifiable-contacts | TB2 suspected-selfpromo | TB3 conflicting-recs | TB4 stale-rec | TB5 no-followthrough-proof | TB6 distrusts-apps
+# trusted_source_type: friend-of-friend|commenter-with-history|i-used-them|unknown
+# RULES: no usernames, no verbatim quotes, no PII. Paraphrase the verification gap only.
