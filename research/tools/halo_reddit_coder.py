@@ -142,13 +142,40 @@ TP3_KEYWORDS = ["dm me", "contact me", "i provide", "we offer", "available for h
                 "message me", "ping me"]
 
 
+def load_credentials():
+    """
+    Beginner-friendly: read credentials from a simple text file
+    `credentials.txt` next to this script, with three lines like:
+        client_id=xxxxx
+        client_secret=yyyyy
+        user_agent=halo-research by u/yourname
+    Falls back to environment variables if the file is absent.
+    """
+    cfg = {}
+    cred_file = Path(__file__).resolve().parent / "credentials.txt"
+    if cred_file.exists():
+        for line in cred_file.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            cfg[k.strip().lower()] = v.strip()
+    cid = cfg.get("client_id") or os.environ.get("REDDIT_CLIENT_ID")
+    secret = cfg.get("client_secret") or os.environ.get("REDDIT_CLIENT_SECRET")
+    ua = (cfg.get("user_agent") or os.environ.get("REDDIT_USER_AGENT")
+          or "halo-vadodara-research/1.0")
+    return cid, secret, ua
+
+
 def get_token():
-    cid = os.environ.get("REDDIT_CLIENT_ID")
-    secret = os.environ.get("REDDIT_CLIENT_SECRET")
-    ua = os.environ.get("REDDIT_USER_AGENT", "halo-vadodara-research/1.0")
+    cid, secret, ua = load_credentials()
     if not cid or not secret:
-        sys.exit("ERROR: set REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET env vars "
-                 "(see setup notes at top of this file). It's free.")
+        sys.exit("ERROR: missing credentials.\n"
+                 "Create a file named 'credentials.txt' in this folder with:\n"
+                 "  client_id=YOUR_ID\n"
+                 "  client_secret=YOUR_SECRET\n"
+                 "  user_agent=halo-research by u/yourname\n"
+                 "(See STEP-BY-STEP.md. It's free — no money needed.)")
     data = urllib.parse.urlencode({"grant_type": "client_credentials"}).encode()
     auth = urllib.request.HTTPPasswordMgrWithDefaultRealm()
     req = urllib.request.Request("https://www.reddit.com/api/v1/access_token",
